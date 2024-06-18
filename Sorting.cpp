@@ -44,3 +44,45 @@ void radixSort(vector<int> &nums){
     }
     return;
 }
+
+
+//  	                Count Inversions in nlogn (using merge sort)
+long long merge(vector<long long>&nums,long long s1,long long e1,long long s2,long long e2){
+    vector<long long>a(e2-s1+1);
+    long long ans = 0;
+    long long i=0,p1=s1,p2=s2;
+    while(p1<=e1 && p2<=e2){
+        if(nums[p1]<=nums[p2]){
+            a[i]=nums[p1];
+            p1++;
+        }
+        else{
+            a[i]=nums[p2];
+            ans+=(e1-p1+1);
+            p2++;
+        }
+        i++;
+    }
+    while(p1<=e1){
+        a[i] = nums[p1];
+        p1++;
+        i++;
+    }
+    while(p2<=e2){
+        a[i] = nums[p2];
+        p2++;
+        i++;
+    }
+    for(long long i = s1;i<=e2;i++){
+        nums[i] = a[i-s1];
+    }
+    return ans;
+}
+long long countInversion(vector<long long>&nums,long long s,long long e){
+    if(s>=e)return 0;
+    long long mid = (s+e)/2;
+    return countInversion(nums,s,mid)+countInversion(nums,mid+1,e)+merge(nums,s,mid,mid+1,e);
+}
+long long countInversions(vector<long long> &nums) {
+    return countInversion(nums,0,nums.size()-1);
+}
